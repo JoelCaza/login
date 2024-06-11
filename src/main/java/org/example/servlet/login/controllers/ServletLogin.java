@@ -13,9 +13,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Optional;
 
-//path para la conexion al Servlet
 @WebServlet ({"/Login","/ServletLogin"})
-public class ServletLogin  extends HttpServlet {
+public class ServletLogin extends HttpServlet {
     final static String USERNAME="admin";
     final static String PASSWORD="admin";
 
@@ -29,21 +28,28 @@ public class ServletLogin  extends HttpServlet {
                 out.println("<html>");
                 out.println("<head>");
                 out.println("<title>ServletLogin</title>");
+                out.println("<style>");
+                out.println("body { font-family: Arial, sans-serif; }");
+                out.println("h1 { color: #333; }");
+                out.println("p { margin-bottom: 10px; }");
+                out.println("button { background-color: #333; color: white; padding: 10px 20px; border: none; cursor: pointer; }");
+                out.println("button:hover { background-color: #555; }");
+                out.println("</style>");
                 out.println("</head>");
                 out.println("<body>");
                 out.println("<h1>Servlet Login</h1>");
                 out.println("<h1>Hola</h1>"+usernameOptional.get()+"has Iniciado Sesion con exito"+"</body>");
                 out.println("<p><a href='"+req.getContextPath()+"/index.html'>Volver</a></p>");
-                out.println("<p><a href='"+req.getContextPath()+"/logout'><button>Cerrar Sesion</button></a></p>");
+                out.println("<p><a href='"+req.getContextPath()+"/LogoutServlet'><button>Cerrar Sesion</button></a></p>");
                 out.println("</body>");
                 out.println("</html>");
             }
         }
         else{
             getServletContext().getRequestDispatcher("/login.jsp").forward(req, resp);
-
         }
     }
+
     @Override
     protected void doPost (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getParameter("username");
@@ -52,12 +58,9 @@ public class ServletLogin  extends HttpServlet {
             HttpSession session = req.getSession();
             session.setAttribute("username", username);
             resp.sendRedirect(req.getContextPath()+"/ServletLogin");
-
         }
         else {
             resp.sendError( HttpServletResponse.SC_UNAUTHORIZED,"Lo sentimos no esta autorizado para ingresar al sistema" );
-
         }
-
     }
 }
