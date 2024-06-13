@@ -1,7 +1,7 @@
 package org.example.servlet.login.models;
 
 public class Producto {
-    private int id;
+    private Integer id;
     private String nombre;
     private String categoria;
     private String descripcion;
@@ -10,7 +10,7 @@ public class Producto {
     public Producto() {
     }
 
-    public Producto(int id, String nombre, String categoria, String descripcion,double precio) {
+    public Producto(Integer id, String nombre, String categoria, String descripcion,double precio) {
         this.id = id;
         this.nombre = nombre;
         this.categoria = categoria;
@@ -18,11 +18,11 @@ public class Producto {
         this.precio = precio;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -73,7 +73,7 @@
     <div>
         <input type="submit" value="Login">
         <!-- Botón para regresar al menú -->
-        <button href="/login_war_exploded/index.html">Regresar al Menú</button>
+        <a href="/login_war_exploded/index.html">Regresar al Menú</a>
     </div>
 </form>
 

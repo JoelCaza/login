@@ -66,6 +66,10 @@ public class ProductoServlet extends HttpServlet {
                 out.println("<td>" + p.getDescripcion() + "</td>");
                 if (usernameOptional.isPresent()) {
                     out.println("<td>" + p.getPrecio() + "</td>");
+                    out.println("<td><a href=\""
+                            +req.getContextPath()+"/agregar-carro?id="
+                            +p.getId()+"\">agrega al carro</a></td>");
+
                 }
                 out.println("</tr>");
             });

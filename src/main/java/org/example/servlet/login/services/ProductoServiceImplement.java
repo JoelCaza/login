@@ -4,6 +4,7 @@ import org.example.servlet.login.models.Producto;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class ProductoServiceImplement implements ProductoService {
 
@@ -16,6 +17,11 @@ public class ProductoServiceImplement implements ProductoService {
                 new Producto(5,"Disipador","Computacion","Intel",20.50)
                 );
 
+    }
+
+    @Override
+    public Optional<Producto> porId(Integer id) {
+        return listar().stream().filter(p -> p.getId().equals(id)).findFirst();
     }
 
 }
