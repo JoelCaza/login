@@ -11,4 +11,6 @@ public interface ProductoService {
     //Metodo para obtener el producto por id
     Optional<Producto> porId(Integer id);
 
+    void guardar(Producto producto);
+    void eliminar(Integer id);
 }
