@@ -1,5 +1,6 @@
 package org.example.servlet.login.services;
 
+import org.example.servlet.login.models.Categoria;
 import org.example.servlet.login.models.Producto;
 
 import java.util.List;
@@ -13,4 +14,11 @@ public interface ProductoService {
 
     void guardar(Producto producto);
     void eliminar(Integer id);
+    //Implementamos un metodo para listar la categoria
+    Optional<Producto> poridCategoria(Integer id);
+    List<Categoria> listarCategorias();
+    Optional<Categoria> porIdCategoria(Integer id);
+
+
+
 }

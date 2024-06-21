@@ -22,7 +22,7 @@
     <a href="${pageContext.request.contextPath}/index.html">Inicio</a>
     <a href="${pageContext.request.contextPath}/LogoutServlet">Salir</a>
 </div>
-<h1>Listado de Productos</h1>
+<h1>Listado de Productos Carrito</h1>
 <%-- Verificar si la lista de productos no es nula y no está vacía --%>
 <%
     List<Producto> productos = (List<Producto>) request.getAttribute("productos");
@@ -51,7 +51,11 @@
         <td><%= p.getPrecio() %></td>
         <td><%= p.getCategoria().getNombre() %></td>
         <td>
+
             <% if (usernameOptional.isPresent()) { %>
+            <a href="${pageContext.request.contextPath}/formulario">Añadir Carrito</a>
+            <a href="${pageContext.request.contextPath}/editarProducto?id=<%= p.getId() %>">Editar</a>
+            <a href="${pageContext.request.contextPath}/eliminarProducto?id=<%= p.getId() %>">Eliminar</a>
             <a href="${pageContext.request.contextPath}/agregar-carro?id=<%= p.getId() %>">Agregar al Carro</a>
             <% } else { %>
             Inicie sesión para agregar al carro
@@ -68,4 +72,3 @@
 %>
 </body>
 </html>
-
