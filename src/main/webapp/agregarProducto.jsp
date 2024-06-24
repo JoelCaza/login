@@ -17,6 +17,9 @@
 <h2>Agregar Nuevo Producto</h2>
 <form action="agregarProducto" method="post">
     Nombre: <input type="text" name="nombre" required><br>
+    <%if(errores != null && errores.containsKey("nombre")){ %>
+    <div style="color: red"<%=errores.get("nombre")%>></div>
+    <% }%>
     Descripción: <textarea name="descripcion"></textarea><br>
     Precio: <input type="text" name="precio" required><br>
     Categoría:
@@ -26,7 +29,8 @@
         <option value="<%= c.getIdCategoria() %>"><%= c.getNombre() %></option>
         <% } %>
     </select><br>
-    <input type="submit" value="Guardar">
+    <input type="submit" value="<%=(producto.getId()!=null && producto.getId()>0 ?"Editar" : "Crear")%>">
+    <input type="hidden" name="id" value="<%=producto.getId()%>">
 </form>
 </body>
 </html>
