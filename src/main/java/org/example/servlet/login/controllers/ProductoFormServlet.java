@@ -15,7 +15,6 @@ import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @WebServlet("/formulario")
 public class ProductoFormServlet extends HttpServlet {
@@ -42,43 +41,45 @@ public class ProductoFormServlet extends HttpServlet {
         String nombre = req.getParameter("nombre");
         Integer idcategoria;
         try {
-            idcategoria = Integer.parseInt(req.getParameter("idcategoria"));
-        }catch (NumberFormatException e) {
+            idcategoria = Integer.parseInt(req.getParameter("idCategoria"));
+        } catch (NumberFormatException e) {
             idcategoria = 0;
-
-
         }
         String descripcionCategoria = req.getParameter("descripcion");
-        Double precio = Double.valueOf(req.getParameter("precio"));
+        Double precio;
         try {
             precio = Double.valueOf(req.getParameter("precio"));
-        }catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             precio = 0.0;
         }
-        Integer idProducto;
-
+        Integer stock;
         try {
-            idProducto = Integer.parseInt(req.getParameter("idProducto"));
+            stock = Integer.parseInt(req.getParameter("stock"));
+        } catch (NumberFormatException e) {
+            stock = 0;
         }
-        catch (NumberFormatException e) {
+        Integer idProducto;
+        try {
+            idProducto = Integer.parseInt(req.getParameter("id"));
+        } catch (NumberFormatException e) {
             idProducto = 0;
         }
-        Map<String,String> errores = new HashMap<>();
-        if (nombre == null || nombre.isBlank() ) {
-            errores.put("nombre", "El nombre no puede estar vacio");
+        Map<String, String> errores = new HashMap<>();
+        if (nombre == null || nombre.isBlank()) {
+            errores.put("nombre", "El nombre no puede estar vacío");
         }
-        if (descripcionCategoria == null || descripcionCategoria.isBlank() ) {
-            errores.put("descripcion", "El descripcion no puede estar vacio");
+        if (descripcionCategoria == null || descripcionCategoria.isBlank()) {
+            errores.put("descripcion", "La descripción no puede estar vacía");
         }
-        if (precio == 0 || precio < 0){
-            errores.put("precio", "El precio no puede estar vacio");
+        if (precio == 0 || precio < 0) {
+            errores.put("precio", "El precio no puede estar vacío o ser negativo");
         }
-        if(idcategoria.equals(0)){
-            errores.put("Categoria", "El categoria no puede estar vacio");
+        if (idcategoria.equals(0)) {
+            errores.put("Categoria", "La categoría no puede estar vacía");
         }
-
-
-
+        if (stock == 0 || stock < 0) {
+            errores.put("stock", "El stock no puede estar vacío o ser negativo");
+        }
 
         Producto producto = new Producto();
         producto.setNombre(nombre);
@@ -87,14 +88,15 @@ public class ProductoFormServlet extends HttpServlet {
         producto.setCategoria(categoria);
         producto.setPrecio(precio);
         producto.setDescripcion(descripcionCategoria);
-        if (errores.isEmpty()){
+        producto.setStock(stock);
+
+        if (errores.isEmpty()) {
             service.guardar(producto);
-            resp.sendRedirect("/productos.jsp");
-        }else {
+            resp.sendRedirect(req.getContextPath() + "/productos");
+        } else {
             req.setAttribute("errores", errores);
+            req.setAttribute("producto", producto);
+            req.getRequestDispatcher("/agregarProducto.jsp").forward(req, resp);
         }
-
-
-
     }
 }

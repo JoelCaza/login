@@ -29,21 +29,17 @@ public class ProductoServlet extends HttpServlet {
         ProductoService productoService = new ProductoServiceJdbcImplement(con);
         List<Producto> productos = productoService.listar();
 
-        // Obtener el nombre de usuario desde el servicio
-        LoginService auth = new LoginServiceimplment();
-        Optional<String> usernameOptional = auth.getUserName(req);
+        // Obtener el nombre de usuario y el rol desde la sesión
+        HttpSession session = req.getSession();
+        Optional<String> usernameOptional = Optional.ofNullable((String) session.getAttribute("username"));
+        String role = (String) session.getAttribute("role");
 
         // Configurar atributos en el request para pasar al JSP
         req.setAttribute("productos", productos);
         req.setAttribute("username", usernameOptional);
+        req.setAttribute("role", role);
 
         // Redirigir al JSP para mostrar el listado de productos
-        try {
-            req.getRequestDispatcher("/listadoCarro.jsp").forward(req, resp);
-        } catch (ServletException | IOException e) {
-            // Manejar la excepción si ocurre algún problema al redirigir
-            e.printStackTrace();
-            // Puedes agregar un mensaje de error o realizar otras acciones de manejo aquí
-        }
+        req.getRequestDispatcher("/listadoCarro.jsp").forward(req, resp);
     }
 }

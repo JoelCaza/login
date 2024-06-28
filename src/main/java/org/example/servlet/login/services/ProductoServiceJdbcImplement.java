@@ -44,13 +44,22 @@ public class ProductoServiceJdbcImplement implements ProductoService {
 
     @Override
     public void guardar(Producto producto) {
-
+        try {
+            repositorioJdbc.guardar(producto);
+        } catch (SQLException e) {
+            throw new ServiceJdbcException(e.getMessage(), e.getCause());
+        }
     }
 
     @Override
     public void eliminar(Integer id) {
-
+        try {
+            repositorioJdbc.eliminar(id);
+        } catch (SQLException e) {
+            throw new ServiceJdbcException(e.getMessage(), e.getCause());
+        }
     }
+
 
     @Override
     public Optional<Producto> poridCategoria(Integer id) {

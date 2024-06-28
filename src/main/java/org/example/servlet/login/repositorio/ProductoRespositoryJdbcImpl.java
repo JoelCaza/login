@@ -7,7 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductoRespositoryJdbcImpl implements Repositorios<Producto>{
+public class ProductoRespositoryJdbcImpl implements Repositorios<Producto> {
 
     private Connection connection;
 
@@ -15,12 +15,11 @@ public class ProductoRespositoryJdbcImpl implements Repositorios<Producto>{
         this.connection = connection;
     }
 
-
     @Override
     public List<Producto> listar() throws SQLException {
         List<Producto> productos = new ArrayList<>();
-        try (Statement smt = connection.createStatement();
-             ResultSet rs = smt.executeQuery(
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(
                      "SELECT p.idarticulo, p.codigo, p.nombre AS nombre_producto, " +
                              "p.stock, p.descripcion, p.imagen, p.condicion, p.precio, " +
                              "c.idcategoria, c.nombre AS nombre_categoria, c.descripcion AS descripcion_categoria, c.condicion AS condicion_categoria " +
@@ -34,7 +33,6 @@ public class ProductoRespositoryJdbcImpl implements Repositorios<Producto>{
         return productos;
     }
 
-
     @Override
     public Producto porId(Integer id) throws SQLException {
         Producto producto = null;
@@ -45,10 +43,9 @@ public class ProductoRespositoryJdbcImpl implements Repositorios<Producto>{
                 "JOIN categoria c ON p.idcategoria = c.idcategoria " +
                 "WHERE p.idarticulo = ?";
 
-
-        try (PreparedStatement smt = connection.prepareStatement(query)) {
-            smt.setInt(1, id);
-            try (ResultSet rs = smt.executeQuery()) {
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     producto = getProducto(rs);
                 }
@@ -62,28 +59,31 @@ public class ProductoRespositoryJdbcImpl implements Repositorios<Producto>{
         String sql;
         if (producto.getId() != null && producto.getId() > 0) {
             // Actualizar producto existente
-            sql = "UPDATE producto SET nombre=?, idcategoria=?, descripcion=?, precio=?, condicion=? WHERE idarticulo=?";
-            try (PreparedStatement smt = connection.prepareStatement(sql)) {
-                smt.setString(1, producto.getNombre());
-                smt.setInt(2, producto.getCategoria().getIdCategoria());
-                smt.setString(3, producto.getDescripcion());
-                smt.setDouble(4, producto.getPrecio());
-                smt.setInt(6, producto.getId());
-                smt.executeUpdate();
+            sql = "UPDATE producto SET nombre=?, idcategoria=?, descripcion=?, precio=?, condicion=?, stock=? WHERE idarticulo=?";
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setString(1, producto.getNombre());
+                stmt.setInt(2, producto.getCategoria().getIdCategoria());
+                stmt.setString(3, producto.getDescripcion());
+                stmt.setDouble(4, producto.getPrecio());
+                stmt.setInt(5, producto.getCondicion());
+                stmt.setInt(6, producto.getStock());
+                stmt.setInt(7, producto.getId());
+                stmt.executeUpdate();
             }
         } else {
             // Insertar nuevo producto
-            sql = "INSERT INTO producto(nombre, idcategoria, descripcion, precio, condicion) VALUES(?, ?, ?, ?, ?)";
-            try (PreparedStatement smt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                smt.setString(1, producto.getNombre());
-                smt.setInt(2, producto.getCategoria().getIdCategoria());
-                smt.setString(3, producto.getDescripcion());
-                smt.setDouble(4, producto.getPrecio());
-
-                smt.executeUpdate();
+            sql = "INSERT INTO producto(nombre, idcategoria, descripcion, precio, condicion, stock) VALUES(?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                stmt.setString(1, producto.getNombre());
+                stmt.setInt(2, producto.getCategoria().getIdCategoria());
+                stmt.setString(3, producto.getDescripcion());
+                stmt.setDouble(4, producto.getPrecio());
+                stmt.setInt(5, producto.getCondicion());
+                stmt.setInt(6, producto.getStock());
+                stmt.executeUpdate();
 
                 // Obtener el ID generado para el nuevo producto
-                try (ResultSet generatedKeys = smt.getGeneratedKeys()) {
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         producto.setId(generatedKeys.getInt(1));
                     }
@@ -96,9 +96,9 @@ public class ProductoRespositoryJdbcImpl implements Repositorios<Producto>{
     @Override
     public void eliminar(Integer id) throws SQLException {
         String sql = "DELETE FROM producto WHERE idarticulo = ?";
-        try (PreparedStatement smt = connection.prepareStatement(sql)) {
-            smt.setInt(1, id);
-            smt.executeUpdate();
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
         }
     }
 
@@ -112,6 +112,7 @@ public class ProductoRespositoryJdbcImpl implements Repositorios<Producto>{
     public Producto desactivar(Integer id) throws SQLException {
         return null;
     }
+
     private static Producto getProducto(ResultSet rs) throws SQLException {
         Producto p = new Producto();
         p.setId(rs.getInt("idarticulo"));
@@ -121,7 +122,7 @@ public class ProductoRespositoryJdbcImpl implements Repositorios<Producto>{
         p.setDescripcion(rs.getString("descripcion"));
         p.setImagen(rs.getString("imagen"));
         p.setCondicion(rs.getInt("condicion"));
-        p.setPrecio(rs.getFloat("precio"));
+        p.setPrecio(rs.getDouble("precio"));
 
         // Crear objeto Categoria y asignar sus atributos
         Categoria categoria = new Categoria();
@@ -136,4 +137,3 @@ public class ProductoRespositoryJdbcImpl implements Repositorios<Producto>{
         return p;
     }
 }
-
